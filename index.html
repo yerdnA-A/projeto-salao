@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AcessiBeleza | A Beleza Sem Barreiras</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* =================================================================
+           PALETA E VARIÁVEIS CSS
+           ================================================================= */
+        :root {
+            --cor-rosa: #F5C7C7;
+            --cor-azul: #A9D1DF;
+            --cor-texto: #222222;
+            --cor-fundo-header: rgba(249, 224, 224, 0.9);
+            --cor-fundo-claro: #FFFFFF;
+            --cor-fundo-secundario: #f7f7f7;
+            --cor-sombra: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --cor-estrela: gold; /* Cor para avaliações */
+        }
+
+        /* =================================================================
+           RESET, ACESSIBILIDADE E LAYOUT
+           ================================================================= */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; color: var(--cor-texto); background-color: var(--cor-fundo-claro); line-height: 1.6; }
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
+        
+        a:focus, button:focus, input:focus, select:focus, .card:focus { 
+            outline: 3px solid var(--cor-azul); 
+            outline-offset: 2px; 
+            border-radius: 6px; 
+        }
+        .container { width: 90%; max-width: 1200px; margin: 0 auto; }
+
+        /* HEADER FIXO E MENU */
+        .site-header { 
+            background-color: var(--cor-fundo-header);
+            backdrop-filter: blur(5px);
+            position: fixed; 
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            padding: 15px 0;
+        }
+
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { text-decoration: none; display: flex; align-items: center; color: var(--cor-texto); font-size: 1.8rem; font-weight: 700; }
+
+        .logo-svg {
+            width: 60px;
+            height: 60px;
+            margin-right: 10px;
+        }
+
+        .logo-img {
+            width: 100px; /* Ajuste este valor para o tamanho desejado */
+            height: auto;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        .logo-svg:hover .logo-circle {
+            fill: var(--cor-rosa);
+        }
+
+        .main-nav ul { list-style: none; display: flex; gap: 20px; }
+        .main-nav ul li a { text-decoration: none; color: var(--cor-texto); font-weight: 500; padding: 5px 0; transition: color 0.3s, border-bottom 0.3s; }
+        .main-nav ul li a:hover, .main-nav ul li a[aria-current="page"] { color: var(--cor-azul); border-bottom: 2px solid var(--cor-azul); }
+
+        /* =================================================================
+           SEÇÃO HERO (VÍDEO DE FUNDO)
+           ================================================================= */
+        .hero-section {
+            height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            text-align: center;
+            overflow: hidden;
+            margin-top: 80px;
+        }
+        
+        .video-background { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        .video-background video { width: 100%; height: 100%; object-fit: cover; }
+        .video-background:empty { background-color: var(--cor-rosa); background-image: linear-gradient(135deg, var(--cor-rosa) 0%, var(--cor-azul) 100%); }
+
+        .overlay { background: rgba(0, 0, 0, 0.45); position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; }
+        .hero-content { position: relative; z-index: 3; color: var(--cor-fundo-claro); max-width: 800px; padding: 20px; }
+        .hero-content h1 { font-size: 3.2rem; margin-bottom: 15px; font-weight: 900; line-height: 1.1; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); }
+        .hero-content p {
+            font-size: 1.3rem; 
+            margin-top: 30px; 
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+        
+        .btn-cta {
+            background-color: var(--cor-azul);
+            color: var(--cor-fundo-claro);
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 700;
+            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: var(--cor-sombra);
+        }
+
+        /* =================================================================
+           SEÇÕES DE CONTEÚDO E CARDS
+           ================================================================= */
+        .content-section {
+            padding: 80px 0;
+            position: relative;
+            text-align: center;
+        }
+        
+        .section-title {
+            font-size: 2.2rem;
+            margin-bottom: 40px;
+            color: var(--cor-azul);
+            border-bottom: 3px solid var(--cor-rosa);
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+
+        .options-section {
+            padding-top: 50px;
+            margin-top: -100px;
+            z-index: 4;
+            background-color: var(--cor-fundo-claro);
+        }
+        
+        .options-grid {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .option-card {
+            background-color: var(--cor-fundo-secundario);
+            border-radius: 12px;
+            box-shadow: var(--cor-sombra);
+            padding: 30px;
+            width: 300px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--cor-texto);
+            transition: background-color 0.3s, transform 0.3s;
+            height: 350px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+        
+        .option-card:hover { background-color: var(--cor-rosa); transform: translateY(-8px); }
+        .option-card i { font-size: 4rem; color: var(--cor-azul); margin-bottom: 15px; }
+        .option-card h3 { font-size: 1.5rem; margin-bottom: 10px; }
+        .option-card-link { font-size: 0.9rem; color: var(--cor-azul); font-weight: 700; }
+
+        /* Seção Destaques */
+        .spotlight-section { background-color: var(--cor-fundo-secundario); }
+
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .salon-card {
+            background-color: var(--cor-fundo-claro);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            text-decoration: none;
+            color: var(--cor-texto);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #E0E0E0;
+            display: block;
+        }
+        .salon-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); }
+
+        .salon-image-placeholder { height: 150px; background-color: var(--cor-azul); display: flex; justify-content: center; align-items: center; font-weight: 700; color: white; font-size: 0.9rem; }
+        .salon-info { padding: 15px; }
+        .salon-info h3 { font-size: 1.3rem; margin-bottom: 5px; }
+        .features-list { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .feature-tag { background-color: var(--cor-rosa); color: var(--cor-texto); padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; }
+        
+        /* Estrelas de Avaliação */
+        .rating-stars { color: var(--cor-estrela); font-size: 0.9em; margin-bottom: 5px; }
+        
+        /* Seção Simples com Botão */
+        .simple-cta-section { padding: 80px 0; text-align: center; }
+        .simple-cta-section.parceria { background-color: var(--cor-fundo-claro); }
+        .simple-cta-section h2 { margin-bottom: 20px; color: var(--cor-texto); border-bottom: none; }
+        .simple-cta-section p { font-size: 1.2rem; margin-bottom: 30px; }
+        
+        .btn-large {
+            background-color: var(--cor-rosa);
+            color: var(--cor-texto);
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 700;
+            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: var(--cor-sombra);
+            display: inline-block;
+        }
+        .btn-large:hover { background-color: #E0B4B4; transform: translateY(-2px); }
+
+        /* FOOTER */
+        .site-footer { background-color: var(--cor-texto); color: white; padding: 30px 0; text-align: center; font-size: 0.9rem; }
+
+        /* RESPONSIVIDADE */
+        @media (max-width: 768px) {
+            .hero-content h1 { font-size: 2.2rem; }
+            .options-grid { gap: 20px; }
+            .option-card { width: 90%; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="container header-content">
+            <a href="#" class="logo">
+                <img src="../imagens/logo.svg" alt="Logo AcessiBeleza" class="logo-img">
+
+            </a>
+            <nav class="main-nav" aria-label="Navegação Principal">
+                <ul>
+                    <li><a href="index.html" aria-current="page">Início</a></li>
+                    <li><a href="catalogo.html">Buscar Salão <i class="fas fa-wheelchair" style="margin-left: 5px;"></i></a></li>
+                    <li><a href="categorias.html">Categorias</a></li>
+                    <li><a href="parceria.html">Para Empresas</a></li>
+                    <li><a href="contato.html">Fale Conosco</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section" id="inicio">
+            <div class="video-background">
+                <video autoplay loop muted playsinline title="Vídeo mostrando atendimento inclusivo em salões de beleza.">
+                    <source src="/videos/fundo.mp4" type="video/mp4">
+                    Seu navegador não suporta a tag de vídeo.
+                </video>
+            </div>
+            <div class="overlay"></div>
+            
+            <div class="hero-content">
+                <h1>A Beleza Sem Barreiras. Seu Espaço É Aqui.</h1>
+                <p>Cuidado e beleza pensados para pessoas com todos os tipos de deficiência e mobilidade reduzida.</p>
+                <a href="catalogo.html" class="btn-cta">Buscar Salões Agora <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </section>
+
+        <section class="options-section content-section">
+            <div class="container">
+                <h2 class="section-title">Encontre o que Você Precisa</h2>
+                
+                <div class="options-grid">
+                    
+                    <a href="catalogo.html" class="option-card" role="link" aria-label="Ir para a busca de salões">
+                        <i class="fas fa-search"></i>
+                        <h3>Buscar Salão</h3>
+                        <p>Busque por cidade e filtre por todos os tipos de acessibilidade disponíveis na sua região.</p>
+                        <span class="option-card-link">IR PARA BUSCA &raquo;</span>
+                    </a>
+
+                    <a href="categorias.html" class="option-card" role="link" aria-label="Ver lista completa de categorias de serviços">
+                        <i class="fas fa-cut"></i>
+                        <h3>Ver Categorias</h3>
+                        <p>Explore as categorias: cabelo, manicure, depilação e estética para encontrar o profissional certo.</p>
+                        <span class="option-card-link">EXPLORAR &raquo;</span>
+                    </a>
+
+                    <a href="parceria.html" class="option-card" role="link" aria-label="Página de inscrição para empresas parceiras">
+                        <i class="fas fa-handshake"></i>
+                        <h3>Quero Ser Parceiro</h3>
+                        <p>Se você tem um salão acessível, registre-se e expanda seu público. Faça parte do movimento!</p>
+                        <span class="option-card-link">INSCREVER AGORA &raquo;</span>
+                    </a>
+
+                </div>
+            </div>
+        </section>
+        
+        <section class="content-section spotlight-section">
+            <div class="container">
+                <h2 class="section-title">Salões em Destaque</h2>
+                <p style="font-size: 1.1rem; margin-bottom: 40px; color: #666;">Conheça os locais mais bem avaliados e acessíveis do nosso catálogo.</p>
+
+                <div class="catalog-grid">
+                    
+                    <a href="detalhes-salao1.html" class="salon-card" role="link">
+                        <div class="salon-image-placeholder">FOTO DO LOCAL</div>
+                        <div class="salon-info">
+                            <h3>Studio Acessível Incluir</h3>
+                            <div class="rating-stars">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                            <p style="font-size: 0.9rem;">Rua Exemplo, 123 - Centro</p>
+                            <ul class="features-list">
+                                <li class="feature-tag"><i class="fas fa-wheelchair"></i> Rampa</li>
+                                <li class="feature-tag"><i class="fas fa-toilet"></i> Banheiro</li>
+                            </ul>
+                        </div>
+                    </a>
+
+                    <a href="detalhes-salao2.html" class="salon-card" role="link">
+                        <div class="salon-image-placeholder" style="background-color: var(--cor-rosa);">FOTO DO LOCAL</div>
+                        <div class="salon-info">
+                            <h3>Beleza Sem Limites</h3>
+                            <div class="rating-stars">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <p style="font-size: 0.9rem;">Av. Principal, 456 - Bairro</p>
+                            <ul class="features-list">
+                                <li class="feature-tag"><i class="fas fa-hands-clapping"></i> Libras</li>
+                                <li class="feature-tag"><i class="fas fa-wheelchair"></i> Rampa</li>
+                            </ul>
+                        </div>
+                    </a>
+
+                    <a href="detalhes-salao3.html" class="salon-card" role="link">
+                        <div class="salon-image-placeholder" style="background-color: var(--cor-azul);">FOTO DO LOCAL</div>
+                        <div class="salon-info">
+                            <h3>Estilo & Inclusão</h3>
+                            <div class="rating-stars">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                            <p style="font-size: 0.9rem;">Rua Floriano, 789 - Zona Sul</p>
+                            <ul class="features-list">
+                                <li class="feature-tag"><i class="fas fa-wheelchair"></i> Elevador</li>
+                                <li class="feature-tag"><i class="fas fa-volume-up"></i> Alerta Sonoro</li>
+                            </ul>
+                        </div>
+                    </a>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="simple-cta-section parceria">
+            <div class="container">
+                <h2>Tem um Salão Acessível?</h2>
+                <p>Cadastre-se gratuitamente e faça parte do movimento pela beleza sem barreiras.</p>
+                <a href="parceria.html" class="btn-large">Cadastrar Salão</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; 2025 AcessiBeleza. Todos os direitos reservados.</p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Salão | AcessiBeleza</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* =================================================================
+           PALETA E VARIÁVEIS CSS
+           ================================================================= */
+        :root {
+            --cor-rosa: #F5C7C7;
+            --cor-azul: #A9D1DF;
+            --cor-texto: #222222;
+            --cor-fundo-header: rgba(249, 224, 224, 0.9);
+            --cor-fundo-claro: #FFFFFF;
+            --cor-fundo-secundario: #f7f7f7;
+            --cor-sombra: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* =================================================================
+           RESET, ACESSIBILIDADE E LAYOUT BÁSICO
+           ================================================================= */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; color: var(--cor-texto); background-color: var(--cor-fundo-secundario); line-height: 1.6; }
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
+        
+        a:focus, button:focus, input:focus, select:focus, .card:focus { 
+            outline: 3px solid var(--cor-azul); 
+            outline-offset: 2px; 
+            border-radius: 6px; 
+        }
+        .container { width: 90%; max-width: 1200px; margin: 0 auto; }
+
+        /* HEADER FIXO E LOGO */
+        .site-header { 
+            background-color: var(--cor-fundo-header);
+            backdrop-filter: blur(5px);
+            position: fixed; 
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            padding: 15px 0;
+        }
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { text-decoration: none; display: flex; align-items: center; color: var(--cor-texto); font-size: 1.8rem; font-weight: 700; }
+        .logo-img {
+        width: 100px; /* Ajuste este valor para o tamanho desejado */
+        height: auto;
+        margin-right: 10px;
+        vertical-align: middle;
+        }
+        .main-nav ul { list-style: none; display: flex; gap: 20px; }
+        .main-nav ul li a { text-decoration: none; color: var(--cor-texto); font-weight: 500; padding: 5px 0; transition: color 0.3s, border-bottom 0.3s; }
+        .main-nav ul li a:hover, .main-nav ul li a[aria-current="page"] { color: var(--cor-azul); border-bottom: 2px solid var(--cor-azul); }
+
+        /* ESTILOS ESPECÍFICOS DA PÁGINA */
+        main { padding-top: 130px; /* Espaço para o header fixo */ }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 40px;
+            color: var(--cor-azul);
+            border-bottom: 3px solid var(--cor-rosa);
+            display: inline-block;
+            padding-bottom: 5px;
+            width: auto;
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* BARRA DE BUSCA E FILTROS ROBUSTOS */
+        .search-area {
+            background-color: var(--cor-rosa);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 1000px;
+            margin: 0 auto 50px;
+            box-shadow: var(--cor-sombra);
+        }
+
+        .search-area form {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .search-area input[type="text"], .search-area select {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            min-width: 200px;
+            flex-grow: 1;
+        }
+
+        .search-area button {
+            background-color: var(--cor-azul);
+            color: var(--cor-texto); 
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        
+        /* LISTAGEM DE SALÕES */
+        .catalog-section { padding: 40px 0 80px; }
+
+        .catalog-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        /* Card de Salão (Mantido da index.html) */
+        .salon-card {
+            background-color: var(--cor-fundo-claro);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            text-decoration: none;
+            color: var(--cor-texto);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #E0E0E0;
+            display: block;
+        }
+        .salon-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); }
+        .salon-image-placeholder { height: 150px; background-color: var(--cor-azul); display: flex; justify-content: center; align-items: center; font-weight: 700; color: white; font-size: 0.9rem; }
+        .salon-info { padding: 15px; text-align: left; }
+        .salon-info h3 { font-size: 1.3rem; margin-bottom: 5px; }
+        .features-list { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .feature-tag { background-color: var(--cor-rosa); color: var(--cor-texto); padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; }
+        
+        /* FOOTER */
+        .site-footer { background-color: var(--cor-texto); color: white; padding: 30px 0; text-align: center; font-size: 0.9rem; margin-top: 40px; }
+
+        /* RESPONSIVIDADE */
+        @media (max-width: 768px) {
+            .header-content { flex-direction: column; }
+            .main-nav ul { flex-wrap: wrap; justify-content: center; }
+            .search-area form { flex-direction: column; }
+            .search-area input, .search-area select, .search-area button { width: 100%; }
+            .catalog-info { flex-direction: column; align-items: flex-start; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="container header-content">
+        <a href="#" class="logo">
+                <img src="../imagens/logo.svg" alt="Logo AcessiBeleza" class="logo-img">
+            </a>
+            <nav class="main-nav" aria-label="Navegação Principal">
+                <ul>
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="catalogo.html" aria-current="page">Buscar Salão</a></li>
+                    <li><a href="categorias.html">Categorias</a></li>
+                    <li><a href="parceria.html">Para Empresas</a></li>
+                    <li><a href="contato.html">Fale Conosco</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1 class="section-title">Encontre Seu Salão Acessível</h1>
+
+            <div class="search-area">
+                <form role="search">
+                    <label for="local" class="sr-only">Localização</label>
+                    <input type="text" id="local" placeholder="Cidade, Estado ou CEP" aria-required="true">
+                    
+                    <label for="servico-busca" class="sr-only">Serviço</label>
+                    <select id="servico-busca">
+                        <option value="">Serviço Desejado</option>
+                        <option value="cabelo">Cabelo & Corte</option>
+                        <option value="unhas">Manicure & Pedicure</option>
+                        <option value="depilacao">Depilação</option>
+                        <option value="estetica">Estética</option>
+                    </select>
+
+                    <label for="acessibilidade-busca" class="sr-only">Filtro de Acessibilidade</label>
+                    <select id="acessibilidade-busca">
+                        <option value="">Acessibilidade Essencial</option>
+                        <option value="rampa">Rampa/Elevador</option>
+                        <option value="libras">Atendimento em Libras</option>
+                        <option value="banheiro">Banheiro Adaptado</option>
+                        <option value="cadeira-adaptada">Cadeira de Lavagem Adaptada</option>
+                    </select>
+                    <button type="submit">Buscar <i class="fas fa-search"></i></button>
+                </form>
+            </div>
+
+            <section class="catalog-section">
+                <div class="catalog-info">
+                    <h2>32 Resultados Encontrados</h2>
+                    <select aria-label="Ordenar Resultados">
+                        <option>Ordenar por: Mais Acessível</option>
+                        <option>Ordenar por: Melhor Avaliação</option>
+                        <option>Ordenar por: Distância</option>
+                    </select>
+                </div>
+                
+                <div class="catalog-grid">
+                    
+                    <a href="#" class="salon-card" role="link">
+                        <div class="salon-image-placeholder">FOTO DO LOCAL</div>
+                        <div class="salon-info">
+                            <h3>Studio Acessível Incluir</h3>
+                            <p style="font-size: 0.9rem;">Rua Exemplo, 123 - Centro</p>
+                            <ul class="features-list">
+                                <li class="feature-tag"><i class="fas fa-wheelchair"></i> Rampa</li>
+                                <li class="feature-tag"><i class="fas fa-toilet"></i> Banheiro</li>
+                            </ul>
+                        </div>
+                    </a>
+
+                    <a href="#" class="salon-card" role="link">
+                        <div class="salon-image-placeholder" style="background-color: var(--cor-rosa);">FOTO DO LOCAL</div>
+                        <div class="salon-info">
+                            <h3>Beleza Sem Limites</h3>
+                            <p style="font-size: 0.9rem;">Av. Principal, 456 - Bairro</p>
+                            <ul class="features-list">
+                                <li class="feature-tag"><i class="fas fa-hands-clapping"></i> Libras</li>
+                                <li class="feature-tag"><i class="fas fa-wheelchair"></i> Rampa</li>
+                                <li class="feature-tag">Cadeira Adaptada</li>
+                            </ul>
+                        </div>
+                    </a>
+
+                    <a href="#" class="salon-card" role="link">
+                        <div class="salon-image-placeholder">FOTO DO LOCAL</div>
+                        <div class="salon-info">
+                            <h3>Corte e Cuidado</h3>
+                            <p style="font-size: 0.9rem;">Rua da Paz, 789 - Sul</p>
+                            <ul class="features-list">
+                                <li class="feature-tag"><i class="fas fa-toilet"></i> Banheiro</li>
+                                <li class="feature-tag">Estacionamento</li>
+                            </ul>
+                        </div>
+                    </a>
+                    
+                    </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>Seu Direito à Beleza. Seu Espaço Garantido.</p>
+            <p>&copy; 2025 AcessiBeleza. | Design e Inclusão.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
